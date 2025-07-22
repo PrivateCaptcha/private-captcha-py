@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "private-captcha"
-version = "0.1.0"
+version = "0.0.1"
 description = "Python client library for Private Captcha API"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "Taras Kushnir", email = "hello@privatecaptcha.com"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -35,8 +35,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/private-captcha-py"
-Repository = "https://github.com/yourusername/private-captcha-py"
+Homepage = "https://docs.privatecaptcha.com/docs/integrations/python/"
+Repository = "https://github.com/PrivateCaptcha/private-captcha-py"
 
 [tool.setuptools.packages.find]
 include = ["private_captcha*"]
