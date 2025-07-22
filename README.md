@@ -29,31 +29,6 @@ except Exception as e:
 
 ## Usage
 
-### Basic Verification
-
-```python
-from private_captcha import Client, SolutionError
-
-client = Client(api_key="your-api-key")
-
-try:
-    result = client.verify("captcha-solution-string")
-    
-    if result.success:
-        # Captcha is valid, proceed with your logic
-        print("Human verified!")
-    else:
-        # Captcha failed verification
-        print(f"Verification failed with code: {result.code}")
-        
-except SolutionError as e:
-    # Handle captcha-specific errors
-    print(f"Solution error: {e}")
-except Exception as e:
-    # Handle other errors (network, API, etc.)
-    print(f"Unexpected error: {e}")
-```
-
 ### Web Framework Integration
 
 #### Flask Example
@@ -70,10 +45,10 @@ def submit_form():
     try:
         # Verify captcha from form data
         client.verify_request(request.form)
-        
+
         # Process your form data here
         return "Form submitted successfully!"
-        
+
     except SolutionError:
         return "Captcha verification failed", 400
 ```
@@ -105,10 +80,9 @@ from private_captcha import Client
 
 client = Client(
     api_key="your-api-key",
-    domain="api.privatecaptcha.com",  # or "api.eu.privatecaptcha.com" for EU
+    domain="api.privatecaptcha.com",        # replace domain for self-hosting or EU isolation
     form_field="private-captcha-solution",  # custom form field name
-    timeout=10.0,  # request timeout in seconds
-    failed_status_code=403  # HTTP status for middleware failures
+    timeout=10.0,                           # request timeout in seconds
 )
 ```
 
@@ -137,63 +111,6 @@ result = client.verify(
     attempts=3  # number of retry attempts
 )
 ```
-
-## Error Handling
-
-The library provides specific exception types for different error scenarios:
-
-```python
-from private_captcha import (
-    Client, 
-    APIKeyError, 
-    SolutionError, 
-    VerificationFailedError
-)
-
-try:
-    client = Client(api_key="")  # Empty API key
-except APIKeyError:
-    print("Invalid API key provided")
-
-try:
-    result = client.verify("")  # Empty solution
-except SolutionError:
-    print("Invalid or empty captcha solution")
-
-try:
-    result = client.verify("solution", attempts=3)
-except VerificationFailedError as e:
-    print(f"Failed after {e.attempts} attempts")
-```
-
-## Response Objects
-
-The `verify()` method returns a `VerifyOutput` object with the following properties:
-
-```python
-result = client.verify("solution")
-
-print(result.success)      # bool: True if verification succeeded
-print(result.code)         # VerifyCode: Specific result code
-print(result.origin)       # str: Origin domain (if available)
-print(result.timestamp)    # str: Verification timestamp
-print(result.request_id)   # str: Request ID for debugging
-```
-
-### Verification Codes
-
-- `NO_ERROR` (0): Success
-- `ERROR_OTHER` (1): General error
-- `DUPLICATE_SOLUTIONS_ERROR` (2): Solution already used
-- `INVALID_SOLUTION_ERROR` (3): Invalid solution format
-- `PARSE_RESPONSE_ERROR` (4): Malformed response
-- `PUZZLE_EXPIRED_ERROR` (5): Puzzle has expired
-- `INVALID_PROPERTY_ERROR` (6): Invalid puzzle property
-- `WRONG_OWNER_ERROR` (7): Site key mismatch
-- `VERIFIED_BEFORE_ERROR` (8): Already verified
-- `MAINTENANCE_MODE_ERROR` (9): Service maintenance
-- `TEST_PROPERTY_ERROR` (10): Test environment
-- `INTEGRITY_ERROR` (11): Data integrity issue
 
 ## Requirements
 
