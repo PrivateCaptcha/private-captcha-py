@@ -1,3 +1,5 @@
+"""Private Captcha API client implementation."""
+
 import json
 import logging
 import time
@@ -15,8 +17,6 @@ from .exceptions import (
     VerificationFailedError,
 )
 from .models import VerifyOutput
-
-"""Private Captcha API client implementation."""
 
 log = logging.getLogger(__name__)
 
