@@ -167,6 +167,10 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         except SolutionError:
             self.fail("verify_request should work with custom form field")
 
+        default_client = Client(api_key=self.api_key)
+        with self.assertRaises(SolutionError):
+            default_client.verify_request(form_data)
+
     def test_eu_domain(self):
         """Test client with EU domain."""
         client = Client(api_key=self.api_key, domain="api.eu.privatecaptcha.com")
