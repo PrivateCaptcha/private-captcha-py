@@ -16,8 +16,7 @@ install:
 
 # Install development dependencies
 install-dev:
-	pip install -e .
-	pip install coverage pylint black
+	pip install -e .[dev]
 
 # Format code
 format:
