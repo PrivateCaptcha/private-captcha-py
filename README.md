@@ -76,26 +76,28 @@ def submit_view(request):
 ### Client Options
 
 ```python
-from private_captcha import Client
+from private_captcha import Client, EU_DOMAIN
 
 client = Client(
     api_key="your-api-key",
-    domain="api.privatecaptcha.com",        # replace domain for self-hosting or EU isolation
+    domain=EU_DOMAIN,                       # replace domain for self-hosting or EU isolation
     form_field="private-captcha-solution",  # custom form field name
     timeout=10.0,                           # request timeout in seconds
 )
 ```
 
-### Regional Domains
+### Non-standard backend domains
 
 ```python
+from private_captcha import Client, EU_DOMAIN
+
 # Use EU domain
 eu_client = Client(
     api_key="your-api-key",
-    domain="api.eu.privatecaptcha.com"
+    domain=EU_DOMAIN  # api.eu.privatecaptcha.com
 )
 
-# Or specify custom domain
+# Or specify custom domain in case of self-hosting
 custom_client = Client(
     api_key="your-api-key", 
     domain="your-custom-domain.com"
@@ -106,15 +108,14 @@ custom_client = Client(
 
 ```python
 result = client.verify(
-    solution="captcha-solution",
     max_backoff_seconds=15,  # maximum wait between retries
-    attempts=3  # number of retry attempts
+    attempts=3               # number of retry attempts
 )
 ```
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.9+
 - No external dependencies (uses only standard library)
 
 ## License
