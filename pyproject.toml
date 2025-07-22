@@ -40,7 +40,3 @@ Repository = "https://github.com/PrivateCaptcha/private-captcha-py"
 
 [tool.setuptools.packages.find]
 include = ["private_captcha*"]
-
-[tool.pylint]
-max-args = 6
-max-positional-arguments = 6
