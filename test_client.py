@@ -2,6 +2,7 @@ import base64
 import os
 import unittest
 import logging
+import threading
 from urllib import request
 from urllib.error import URLError
 
@@ -15,6 +16,8 @@ class TestPrivateCaptchaClient(unittest.TestCase):
 
     SOLUTIONS_COUNT = 16
     SOLUTION_LENGTH = 8
+    _cached_puzzle = None
+    _puzzle_lock = threading.Lock()
 
     @classmethod
     def setUpClass(cls):
@@ -28,18 +31,27 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         if not cls.api_key:
             raise ValueError("PC_API_KEY environment variable not set")
 
-    def fetch_test_puzzle(self) -> bytes:
-        """Fetch a test puzzle from the API."""
-        puzzle_url = "https://api.privatecaptcha.com/puzzle?sitekey=aaaaaaaabbbbccccddddeeeeeeeeeeee"
-        headers = {"Origin": "not.empty"}
+    @classmethod
+    def fetch_test_puzzle(cls) -> bytes:
+        """Fetch a test puzzle from the API (cached after first call)."""
+        if cls._cached_puzzle is not None:
+            return cls._cached_puzzle
 
-        req = request.Request(puzzle_url, headers=headers)
+        with cls._puzzle_lock:
+            if cls._cached_puzzle is not None:
+                return cls._cached_puzzle
 
-        try:
-            with request.urlopen(req) as response:
-                return response.read()
-        except URLError as e:
-            self.fail(f"Failed to fetch test puzzle: {e}")
+            puzzle_url = "https://api.privatecaptcha.com/puzzle?sitekey=aaaaaaaabbbbccccddddeeeeeeeeeeee"
+            headers = {"Origin": "not.empty"}
+
+            req = request.Request(puzzle_url, headers=headers)
+
+            try:
+                with request.urlopen(req) as response:
+                    cls._cached_puzzle = response.read()
+                    return cls._cached_puzzle
+            except URLError as e:
+                raise AssertionError(f"Failed to fetch test puzzle: {e}")
 
     def test_stub_puzzle(self):
         """Test verification with empty solutions (should fail with test property error)."""
