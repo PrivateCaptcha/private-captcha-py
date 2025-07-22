@@ -1,25 +1,20 @@
+"""Exception classes for Private Captcha client errors."""
+
+
 class PrivateCaptchaError(Exception):
     """Base exception for the Private Captcha client."""
-
-    pass
 
 
 class APIKeyError(PrivateCaptchaError):
     """Raised when the API key is invalid or empty."""
 
-    pass
-
 
 class SolutionError(PrivateCaptchaError):
     """Raised for issues with the captcha solution."""
 
-    pass
-
 
 class RetriableError(PrivateCaptchaError):
     """Marker for errors that can be retried."""
-
-    pass
 
 
 class RetriableHTTPError(RetriableError):

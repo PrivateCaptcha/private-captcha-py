@@ -1,6 +1,5 @@
 import json
 import logging
-import random
 import time
 from http import HTTPStatus
 from typing import Optional
@@ -10,13 +9,14 @@ from urllib.error import URLError
 
 from .exceptions import (
     APIKeyError,
-    PrivateCaptchaError,
     RetriableError,
     RetriableHTTPError,
     SolutionError,
     VerificationFailedError,
 )
-from .models import VerifyCode, VerifyOutput
+from .models import VerifyOutput
+
+"""Private Captcha API client implementation."""
 
 log = logging.getLogger(__name__)
 

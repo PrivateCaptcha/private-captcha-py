@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Optional
 
+"""Data models for Private Captcha API responses."""
+
 
 class VerifyCode(IntEnum):
     """Represents verification error codes from the API."""

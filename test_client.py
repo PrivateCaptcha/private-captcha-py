@@ -1,7 +1,5 @@
 import base64
-import json
 import os
-import time
 import unittest
 import logging
 from urllib import request

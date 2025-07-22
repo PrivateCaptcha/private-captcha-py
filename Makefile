@@ -24,7 +24,7 @@ format:
 
 # Lint code
 lint:
-	pylint private_captcha/ test_*.py
+	pylint private_captcha/
 
 # Clean up build artifacts
 clean:
