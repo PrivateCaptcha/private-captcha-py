@@ -32,7 +32,7 @@ RETRIABLE_STATUSES = {
     HTTPStatus.SERVICE_UNAVAILABLE,
     HTTPStatus.GATEWAY_TIMEOUT,
     HTTPStatus.REQUEST_TIMEOUT,
-    HTTPStatus.TOO_EARLY,
+    HTTPStatus.TOO_EARLY,  # pylint: disable=no-member
 }
 
 
