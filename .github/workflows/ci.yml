@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - '**'
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - '**/.*.yml'
+    - '.vscode/**'
+    tags-ignore:
+    - '*'
+  schedule:
+    # we want to verify our SDKs on a constant schedule
+    - cron: '0 0 * * *'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.13']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        make install-dev
+
+    - name: Lint with pylint
+      run: make lint
+
+    - name: Run tests
+      run: make test
+      env:
+        PC_API_KEY: ${{ secrets.PC_API_KEY }}
