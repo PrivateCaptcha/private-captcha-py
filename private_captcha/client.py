@@ -44,7 +44,6 @@ class Client:
         api_key: str,
         domain: Optional[str] = None,
         form_field: str = DEFAULT_FORM_FIELD,
-        failed_status_code: int = HTTPStatus.FORBIDDEN,
         timeout: Optional[float] = None,
     ):
         """
@@ -53,7 +52,6 @@ class Client:
         :param api_key: Your API key.
         :param domain: The API domain to use. Defaults to the global domain.
         :param form_field: The form field name for the solution.
-        :param failed_status_code: The HTTP status code for middleware to return on failure.
         :param timeout: Request timeout in seconds.
         """
         if not api_key:
@@ -67,7 +65,6 @@ class Client:
         self.endpoint = f"https://{domain.rstrip('/')}/verify"
         self.api_key = api_key
         self.form_field = form_field
-        self.failed_status_code = failed_status_code
         self.timeout = timeout
 
     def _do_verify(self, solution: str) -> tuple[dict, str]:
