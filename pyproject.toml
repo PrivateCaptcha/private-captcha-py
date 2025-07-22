@@ -43,3 +43,4 @@ include = ["private_captcha*"]
 
 [tool.pylint]
 max-args = 6
+max-positional-arguments = 6
