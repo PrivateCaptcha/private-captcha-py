@@ -5,7 +5,7 @@ Python client for server-side verification of Private Captcha solutions.
 ## Installation
 
 ```bash
-pip install private-captcha-py
+pip install private-captcha
 ```
 
 ## Quick Start
