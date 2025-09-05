@@ -101,10 +101,8 @@ class Client:
                             retry_after = 0
 
                 raise RetriableHTTPError(e.code, retry_after=retry_after) from e
-            else:
-                raise HTTPError(e.code) from e
 
-            raise
+            raise HTTPError(e.code) from e
         except (json.JSONDecodeError, URLError) as e:
             # URLError for network issues, JSONDecodeError for malformed responses
             raise RetriableError() from e
