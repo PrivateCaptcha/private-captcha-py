@@ -17,6 +17,14 @@ class RetriableError(PrivateCaptchaError):
     """Marker for errors that can be retried."""
 
 
+class HTTPError(PrivateCaptchaError):
+    """An HTTP error."""
+
+    def __init__(self, status_code: int):
+        super().__init__(f"API returned HTTP status {status_code}")
+        self.status_code = status_code
+
+
 class RetriableHTTPError(RetriableError):
     """An HTTP error that can be retried."""
 

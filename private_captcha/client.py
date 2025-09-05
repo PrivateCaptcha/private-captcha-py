@@ -14,6 +14,7 @@ from .exceptions import (
     RetriableError,
     RetriableHTTPError,
     SolutionError,
+    HTTPError,
     VerificationFailedError,
 )
 from .models import VerifyOutput
@@ -23,7 +24,7 @@ log = logging.getLogger(__name__)
 GLOBAL_DOMAIN = "api.privatecaptcha.com"
 EU_DOMAIN = "api.eu.privatecaptcha.com"
 DEFAULT_FORM_FIELD = "private-captcha-solution"
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 MIN_BACKOFF_MILLIS = 250
 RETRIABLE_STATUSES = {
     HTTPStatus.TOO_MANY_REQUESTS,
@@ -100,6 +101,8 @@ class Client:
                             retry_after = 0
 
                 raise RetriableHTTPError(e.code, retry_after=retry_after) from e
+            else:
+                raise HTTPError(e.code) from e
 
             raise
         except (json.JSONDecodeError, URLError) as e:

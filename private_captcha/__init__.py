@@ -5,6 +5,7 @@ from .exceptions import (
     APIKeyError,
     PrivateCaptchaError,
     SolutionError,
+    HTTPError,
     VerificationFailedError,
 )
 from .models import VerifyOutput
@@ -16,6 +17,7 @@ __all__ = [
     "PrivateCaptchaError",
     "APIKeyError",
     "SolutionError",
+    "HTTPError",
     "VerifyOutput",
     "VerificationFailedError",
 ]

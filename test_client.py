@@ -6,7 +6,7 @@ import threading
 from urllib import request
 from urllib.error import URLError
 
-from private_captcha import Client, SolutionError
+from private_captcha import Client, SolutionError, HTTPError
 from private_captcha.models import VerifyCode
 from private_captcha.client import DEFAULT_FORM_FIELD
 
@@ -83,11 +83,10 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         solutions_str = base64.b64encode(malformed_solutions_bytes).decode("ascii")
         payload = f"{solutions_str}.{puzzle.decode('ascii')}"
 
-        output = client.verify(payload)
+        with self.assertRaises(HTTPError) as cm:
+            output = client.verify(payload)
 
-        # Should fail with parse response error
-        self.assertFalse(output.success)
-        self.assertEqual(output.code, VerifyCode.PARSE_RESPONSE_ERROR)
+        self.assertEqual(cm.exception.status_code, 400)
 
     def test_verify_empty_solution(self):
         """Test that empty solution raises SolutionError."""
@@ -146,8 +145,10 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         # Test with malformed data
         form_data = {DEFAULT_FORM_FIELD: "invalid-solution"}
 
-        with self.assertRaises(SolutionError):
+        with self.assertRaises(HTTPError) as cm:
             client.verify_request(form_data)
+
+        self.assertEqual(cm.exception.status_code, 400)
 
     def test_custom_form_field(self):
         """Test client with custom form field name."""

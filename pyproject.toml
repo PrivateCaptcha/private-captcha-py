@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "private-captcha"
-version = "0.0.1"
+version = "0.0.2"
 description = "Python client library for Private Captcha API"
 readme = "README.md"
 requires-python = ">=3.8"
