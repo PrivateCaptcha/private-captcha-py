@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 GLOBAL_DOMAIN = "api.privatecaptcha.com"
 EU_DOMAIN = "api.eu.privatecaptcha.com"
 DEFAULT_FORM_FIELD = "private-captcha-solution"
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 MIN_BACKOFF_MILLIS = 250
 RETRIABLE_STATUSES = {
     HTTPStatus.TOO_MANY_REQUESTS,
