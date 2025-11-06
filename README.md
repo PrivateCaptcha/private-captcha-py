@@ -1,6 +1,6 @@
-# private-captcha-py
+# Official Python client for Private Captcha API
 
-Python client for server-side verification of Private Captcha solutions.
+[![PyPI version](https://img.shields.io/pypi/v/private-captcha.svg)](https://pypi.org/project/private-captcha/) ![CI](https://github.com/PrivateCaptcha/private-captcha-py/actions/workflows/ci.yml/badge.svg)
 
 ## Installation
 
