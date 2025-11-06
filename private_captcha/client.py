@@ -87,6 +87,8 @@ class Client:
                 response_data = json.loads(response_body)
                 return response_data, trace_id
         except URLLibHTTPError as e:
+            trace_id = e.headers.get("X-Trace-ID") if e.headers else None
+            
             if e.code in RETRIABLE_STATUSES:
                 retry_after = 0
                 if e.code == HTTPStatus.TOO_MANY_REQUESTS:
@@ -100,9 +102,9 @@ class Client:
                             )
                             retry_after = 0
 
-                raise RetriableHTTPError(e.code, retry_after=retry_after) from e
+                raise RetriableHTTPError(e.code, retry_after=retry_after, trace_id=trace_id) from e
 
-            raise HTTPError(e.code) from e
+            raise HTTPError(e.code, trace_id=trace_id) from e
         except (json.JSONDecodeError, URLError) as e:
             # URLError for network issues, JSONDecodeError for malformed responses
             raise RetriableError() from e
@@ -137,6 +139,7 @@ class Client:
 
         current_backoff = b_min
         last_err: Optional[Exception] = None
+        last_trace_id: Optional[str] = None
 
         for i in range(attempts):
             if i > 0:
@@ -157,12 +160,14 @@ class Client:
                 )
             except RetriableError as e:
                 last_err = e
+                if isinstance(e, RetriableHTTPError) and e.trace_id:
+                    last_trace_id = e.trace_id
                 log.debug("Retriable error on attempt %d of %d: %s", i + 1, attempts, e)
                 continue
 
         log.error("Failed to verify solution after %d attempts.", attempts)
         raise VerificationFailedError(
-            f"Failed to verify solution after {attempts} attempts", attempts
+            f"Failed to verify solution after {attempts} attempts", attempts, trace_id=last_trace_id
         )
 
     def verify_request(self, form_data: dict) -> None:
