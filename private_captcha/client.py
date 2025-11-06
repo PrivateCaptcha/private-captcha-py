@@ -88,7 +88,7 @@ class Client:
                 return response_data, trace_id
         except URLLibHTTPError as e:
             trace_id = e.headers.get("X-Trace-ID") if e.headers else None
-            
+
             if e.code in RETRIABLE_STATUSES:
                 retry_after = 0
                 if e.code == HTTPStatus.TOO_MANY_REQUESTS:
@@ -160,7 +160,7 @@ class Client:
                 )
             except RetriableError as e:
                 last_err = e
-                if isinstance(e, RetriableHTTPError) and e.trace_id:
+                if isinstance(e, RetriableHTTPError):
                     last_trace_id = e.trace_id
                 log.debug("Retriable error on attempt %d of %d: %s", i + 1, attempts, e)
                 continue
