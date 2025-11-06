@@ -49,13 +49,13 @@ class VerifyOutput:
     timestamp: Optional[str] = None
 
     # Internal fields, for debugging and tracing
-    _request_id: Optional[str] = None
+    _trace_id: Optional[str] = None
     _attempt: Optional[int] = None
 
     @property
-    def request_id(self) -> Optional[str]:
+    def trace_id(self) -> Optional[str]:
         """The request ID for tracing purposes."""
-        return self._request_id
+        return self._trace_id
 
     def __str__(self) -> str:
         """The string representation of the verification error code."""

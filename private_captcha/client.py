@@ -156,7 +156,7 @@ class Client:
             try:
                 response_data, trace_id = self._do_verify(solution)
                 return VerifyOutput.from_dict(
-                    response_data, _request_id=trace_id, _attempt=i + 1
+                    response_data, _trace_id=trace_id, _attempt=i + 1
                 )
             except RetriableError as e:
                 last_err = e
