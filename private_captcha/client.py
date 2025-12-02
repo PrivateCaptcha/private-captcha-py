@@ -26,6 +26,7 @@ EU_DOMAIN = "api.eu.privatecaptcha.com"
 DEFAULT_FORM_FIELD = "private-captcha-solution"
 VERSION = "0.0.5"
 MIN_BACKOFF_MILLIS = 250
+BACKOFF_FACTOR = 2.0
 RETRIABLE_STATUSES = {
     HTTPStatus.TOO_MANY_REQUESTS,
     HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -138,11 +139,8 @@ class Client:
         if max_backoff_seconds <= 0:
             max_backoff_seconds = 20
 
-        b_min = MIN_BACKOFF_MILLIS / 1000.0
         b_max = float(max_backoff_seconds)
-        b_factor = 2.0
-
-        current_backoff = b_min
+        current_backoff = MIN_BACKOFF_MILLIS / 1000.0
         last_err: Optional[Exception] = None
         last_trace_id: Optional[str] = None
 
@@ -156,7 +154,7 @@ class Client:
                     sleep_duration = max(sleep_duration, float(last_err.retry_after))
 
                 time.sleep(min(sleep_duration, b_max))
-                current_backoff = min(b_max, current_backoff * b_factor)
+                current_backoff = min(b_max, current_backoff * BACKOFF_FACTOR)
 
             try:
                 response_data, trace_id = self._do_verify(solution, sitekey)
