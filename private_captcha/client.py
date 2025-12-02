@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 GLOBAL_DOMAIN = "api.privatecaptcha.com"
 EU_DOMAIN = "api.eu.privatecaptcha.com"
 DEFAULT_FORM_FIELD = "private-captcha-solution"
-VERSION = "0.0.4"
+VERSION = "0.0.5"
 MIN_BACKOFF_MILLIS = 250
 RETRIABLE_STATUSES = {
     HTTPStatus.TOO_MANY_REQUESTS,
@@ -68,12 +68,15 @@ class Client:
         self.form_field = form_field
         self.timeout = timeout
 
-    def _do_verify(self, solution: str) -> tuple[dict, str]:
+    def _do_verify(self, solution: str, sitekey: str = '') -> tuple[dict, str]:
         headers = {
             "X-Api-Key": self.api_key,
             "Content-Type": "text/plain",
             "User-Agent": "private-captcha-py/" + VERSION,
         }
+        if sitekey:
+            headers["X-PC-Sitekey"] = sitekey
+
         req = request.Request(
             self.endpoint,
             data=solution.encode("utf-8"),
@@ -112,6 +115,7 @@ class Client:
     def verify(
         self,
         solution: str,
+        sitekey: str = '',
         max_backoff_seconds: int = 10,
         attempts: int = 5,
     ) -> VerifyOutput:
@@ -178,5 +182,5 @@ class Client:
         """
         solution = form_data.get(self.form_field)
         output = self.verify(solution)
-        if not output.success:
-            raise SolutionError(f"Captcha verification failed: {output}")
+        if not output.ok():
+            raise SolutionError(f"Captcha verification failed: {output.code}")

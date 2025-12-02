@@ -19,7 +19,7 @@ client = Client(api_key="your-api-key-here")
 # Verify a captcha solution
 try:
     result = client.verify(solution="user-solution-from-frontend")
-    if result.success:
+    if result.ok():
         print("Captcha verified successfully!")
     else:
         print(f"Verification failed: {result}")

@@ -135,8 +135,9 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         # This should not raise an exception for test property (it's considered "success")
         try:
             client.verify_request(form_data)
-        except SolutionError:
-            self.fail("verify_request should not fail for test property error")
+        except SolutionError as e:
+            if not str(e).endswith(str(VerifyCode.TEST_PROPERTY_ERROR)):
+                self.fail("verify_request should not fail for test property error")
 
     def test_verify_request_failure(self):
         """Test verify_request method with invalid form data."""
@@ -165,8 +166,9 @@ class TestPrivateCaptchaClient(unittest.TestCase):
 
         try:
             client.verify_request(form_data)
-        except SolutionError:
-            self.fail("verify_request should work with custom form field")
+        except SolutionError as e:
+            if not str(e).endswith(str(VerifyCode.TEST_PROPERTY_ERROR)):
+                self.fail("verify_request should work with custom form field")
 
         default_client = Client(api_key=self.api_key)
         with self.assertRaises(SolutionError):

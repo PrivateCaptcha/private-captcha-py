@@ -52,6 +52,9 @@ class VerifyOutput:
     _trace_id: Optional[str] = None
     _attempt: Optional[int] = None
 
+    def ok(self) -> bool:
+        return self.success and (self.code == VerifyCode.NO_ERROR)
+
     @property
     def trace_id(self) -> Optional[str]:
         """The request ID for tracing purposes."""
