@@ -123,6 +123,7 @@ class Client:
         Verifies a captcha solution.
 
         :param solution: The captcha solution string.
+        :param sitekey: An expected sitekey to verify.
         :param max_backoff_seconds: Maximum backoff time between retries.
         :param attempts: Maximum number of attempts.
         :return: A VerifyOutput object with the verification result.
@@ -158,7 +159,7 @@ class Client:
                 current_backoff = min(b_max, current_backoff * b_factor)
 
             try:
-                response_data, trace_id = self._do_verify(solution)
+                response_data, trace_id = self._do_verify(solution, sitekey)
                 return VerifyOutput.from_dict(
                     response_data, _trace_id=trace_id, _attempt=i + 1
                 )

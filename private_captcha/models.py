@@ -53,6 +53,7 @@ class VerifyOutput:
     _attempt: Optional[int] = None
 
     def ok(self) -> bool:
+        """Checks if captcha solution verification succeeded."""
         return self.success and (self.code == VerifyCode.NO_ERROR)
 
     @property
