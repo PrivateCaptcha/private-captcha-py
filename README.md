@@ -1,117 +1,35 @@
-# Official Python client for Private Captcha API
+# Private Captcha for Python
 
 [![PyPI version](https://img.shields.io/pypi/v/private-captcha.svg)](https://pypi.org/project/private-captcha/) ![CI](https://github.com/PrivateCaptcha/private-captcha-py/actions/workflows/ci.yml/badge.svg)
 
-## Installation
+Official Python client for Private Captcha API
 
-```bash
-pip install private-captcha
-```
+<mark>Please check the [official documentation](https://docs.privatecaptcha.com/docs/integrations/python/) for the in-depth and up-to-date information.</mark>
 
 ## Quick Start
 
-```python
-from private_captcha import Client
-
-# Initialize the client with your API key
-client = Client(api_key="your-api-key-here")
-
-# Verify a captcha solution
-try:
-    result = client.verify(solution="user-solution-from-frontend")
-    if result.ok():
-        print("Captcha verified successfully!")
-    else:
-        print(f"Verification failed: {result}")
-except Exception as e:
-    print(f"Error: {e}")
-```
-
-## Usage
-
-### Web Framework Integration
-
-#### Flask Example
-
-```python
-from flask import Flask, request
-from private_captcha import Client, SolutionError
-
-app = Flask(__name__)
-client = Client(api_key="your-api-key")
-
-@app.route('/submit', methods=['POST'])
-def submit_form():
+- Install `private-captcha` package
+    ```bash
+    pip install private-captcha
+    ```
+- Instantiate the `Client` class and call `verify()` method to verify the solution
+    ```python
+    from private_captcha import Client
+    
+    # Initialize the client with your API key
+    client = Client(api_key="your-api-key-here")
+    
+    # Verify a captcha solution
     try:
-        # Verify captcha from form data
-        client.verify_request(request.form)
-
-        # Process your form data here
-        return "Form submitted successfully!"
-
-    except SolutionError:
-        return "Captcha verification failed", 400
-```
-
-#### Django Example
-
-```python
-from django.http import HttpResponse
-from private_captcha import Client, SolutionError
-
-client = Client(api_key="your-api-key")
-
-def submit_view(request):
-    if request.method == 'POST':
-        try:
-            client.verify_request(request.POST)
-            # Process form data
-            return HttpResponse("Success!")
-        except SolutionError:
-            return HttpResponse("Captcha failed", status=400)
-```
-
-## Configuration
-
-### Client Options
-
-```python
-from private_captcha import Client, EU_DOMAIN
-
-client = Client(
-    api_key="your-api-key",
-    domain=EU_DOMAIN,                       # replace domain for self-hosting or EU isolation
-    form_field="private-captcha-solution",  # custom form field name
-    timeout=10.0,                           # request timeout in seconds
-)
-```
-
-### Non-standard backend domains
-
-```python
-from private_captcha import Client, EU_DOMAIN
-
-# Use EU domain
-eu_client = Client(
-    api_key="your-api-key",
-    domain=EU_DOMAIN  # api.eu.privatecaptcha.com
-)
-
-# Or specify custom domain in case of self-hosting
-custom_client = Client(
-    api_key="your-api-key", 
-    domain="your-custom-domain.com"
-)
-```
-
-### Retry Configuration
-
-```python
-result = client.verify(
-    max_backoff_seconds=15,  # maximum wait between retries
-    attempts=3               # number of retry attempts
-)
-```
+        result = client.verify(solution="user-solution-from-frontend")
+        if result.ok():
+            print("Captcha verified successfully!")
+        else:
+            print(f"Verification failed: {result}")
+    except Exception as e:
+        print(f"Error: {e}")
+    ```
+- Integrate with Flask or Django using `client.verify_request()` helper
 
 ## Requirements
 
