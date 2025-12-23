@@ -19,6 +19,7 @@ class VerifyCode(IntEnum):
     MAINTENANCE_MODE_ERROR = 9
     TEST_PROPERTY_ERROR = 10
     INTEGRITY_ERROR = 11
+    ORG_SCOPE_ERROR = 12
 
     def __str__(self) -> str:
         return _VERIFY_CODE_MAP.get(self, "error")
@@ -37,6 +38,7 @@ _VERIFY_CODE_MAP = {
     VerifyCode.MAINTENANCE_MODE_ERROR: "maintenance-mode",
     VerifyCode.TEST_PROPERTY_ERROR: "property-test",
     VerifyCode.INTEGRITY_ERROR: "integrity-error",
+    VerifyCode.ORG_SCOPE_ERROR: "org-scope-error",
 }
 
 
