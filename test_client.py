@@ -43,7 +43,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
                 return cls._cached_puzzle
 
             puzzle_url = (
-                "https://api.privatecaptcha.com/puzzle?sitekey=" + self.TEST_SITEKEY
+                "https://api.privatecaptcha.com/puzzle?sitekey=" + cls.TEST_SITEKEY
             )
             headers = {"Origin": "not.empty"}
 
