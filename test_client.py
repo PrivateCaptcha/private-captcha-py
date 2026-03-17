@@ -16,6 +16,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
 
     SOLUTIONS_COUNT = 16
     SOLUTION_LENGTH = 8
+    TEST_SITEKEY = "aaaaaaaabbbbccccddddeeeeeeeeeeee"
     _cached_puzzle = None
     _puzzle_lock = threading.Lock()
 
@@ -41,7 +42,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
             if cls._cached_puzzle is not None:
                 return cls._cached_puzzle
 
-            puzzle_url = "https://api.privatecaptcha.com/puzzle?sitekey=aaaaaaaabbbbccccddddeeeeeeeeeeee"
+            puzzle_url = "https://api.privatecaptcha.com/puzzle?sitekey=" + TEST_SITEKEY
             headers = {"Origin": "not.empty"}
 
             req = request.Request(puzzle_url, headers=headers)
@@ -64,7 +65,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         solutions_str = base64.b64encode(empty_solutions_bytes).decode("ascii")
         payload = f"{solutions_str}.{puzzle.decode('ascii')}"
 
-        output = client.verify(payload)
+        output = client.verify(payload, sitekey=TEST_SITEKEY)
 
         # Should succeed but indicate test property error
         self.assertTrue(output.success)
@@ -84,7 +85,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         payload = f"{solutions_str}.{puzzle.decode('ascii')}"
 
         with self.assertRaises(HTTPError) as cm:
-            output = client.verify(payload)
+            output = client.verify(payload, sitekey=TEST_SITEKEY)
 
         self.assertEqual(cm.exception.status_code, 400)
 
@@ -108,7 +109,9 @@ class TestPrivateCaptchaClient(unittest.TestCase):
 
         # This should fail after multiple attempts
         with self.assertRaises(VerificationFailedError) as context:
-            client.verify(solution="asdf", max_backoff_seconds=1, attempts=4)
+            client.verify(
+                solution="asdf", max_backoff_seconds=1, attempts=4, sitekey=TEST_SITEKEY
+            )
 
         # Should have failed after 4 attempts
         self.assertEqual(context.exception.attempts, 4)
@@ -134,7 +137,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
 
         # This should not raise an exception for test property (it's considered "success")
         try:
-            client.verify_request(form_data)
+            client.verify_request(form_data, sitekey=TEST_SITEKEY)
         except SolutionError as e:
             if not str(e).endswith(str(VerifyCode.TEST_PROPERTY_ERROR)):
                 self.fail("verify_request should not fail for test property error")
@@ -147,7 +150,7 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         form_data = {DEFAULT_FORM_FIELD: "invalid-solution"}
 
         with self.assertRaises(HTTPError) as cm:
-            client.verify_request(form_data)
+            client.verify_request(form_data, sitekey=TEST_SITEKEY)
 
         self.assertEqual(cm.exception.status_code, 400)
 
@@ -165,14 +168,14 @@ class TestPrivateCaptchaClient(unittest.TestCase):
         form_data = {CUSTOM_FORM_FIELD: payload}
 
         try:
-            client.verify_request(form_data)
+            client.verify_request(form_data, sitekey=TEST_SITEKEY)
         except SolutionError as e:
             if not str(e).endswith(str(VerifyCode.TEST_PROPERTY_ERROR)):
                 self.fail("verify_request should work with custom form field")
 
         default_client = Client(api_key=self.api_key)
         with self.assertRaises(SolutionError):
-            default_client.verify_request(form_data)
+            default_client.verify_request(form_data, sitekey=TEST_SITEKEY)
 
     def test_eu_domain(self):
         """Test client with EU domain."""

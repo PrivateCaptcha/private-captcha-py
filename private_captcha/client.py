@@ -69,7 +69,7 @@ class Client:
         self.form_field = form_field
         self.timeout = timeout
 
-    def _do_verify(self, solution: str, sitekey: str = '') -> tuple[dict, str]:
+    def _do_verify(self, solution: str, sitekey: str = "") -> tuple[dict, str]:
         headers = {
             "X-Api-Key": self.api_key,
             "Content-Type": "text/plain",
@@ -106,7 +106,9 @@ class Client:
                             )
                             retry_after = 0
 
-                raise RetriableHTTPError(e.code, retry_after=retry_after, trace_id=trace_id) from e
+                raise RetriableHTTPError(
+                    e.code, retry_after=retry_after, trace_id=trace_id
+                ) from e
 
             raise HTTPError(e.code, trace_id=trace_id) from e
         except (json.JSONDecodeError, URLError) as e:
@@ -116,7 +118,7 @@ class Client:
     def verify(
         self,
         solution: str,
-        sitekey: str = '',
+        sitekey: str = "",
         max_backoff_seconds: int = 10,
         attempts: int = 5,
     ) -> VerifyOutput:
@@ -170,16 +172,18 @@ class Client:
 
         log.error("Failed to verify solution after %d attempts.", attempts)
         raise VerificationFailedError(
-            f"Failed to verify solution after {attempts} attempts", attempts, trace_id=last_trace_id
+            f"Failed to verify solution after {attempts} attempts",
+            attempts,
+            trace_id=last_trace_id,
         )
 
-    def verify_request(self, form_data: dict) -> None:
+    def verify_request(self, form_data: dict, sitekey: str = "") -> None:
         """
         Verifies a captcha solution from form data. Raises SolutionError on failure.
 
         :param form_data: A dictionary-like object containing form data (e.g., request.POST).
         """
         solution = form_data.get(self.form_field)
-        output = self.verify(solution)
+        output = self.verify(solution, sitekey=sitekey)
         if not output.ok():
             raise SolutionError(f"Captcha verification failed: {output.code}")
