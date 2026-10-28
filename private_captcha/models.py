@@ -20,6 +20,7 @@ class VerifyCode(IntEnum):
     TEST_PROPERTY_ERROR = 10
     INTEGRITY_ERROR = 11
     ORG_SCOPE_ERROR = 12
+    SOLUTION_TIMING_ERROR = 13
 
     def __str__(self) -> str:
         return _VERIFY_CODE_MAP.get(self, "error")
@@ -39,6 +40,7 @@ _VERIFY_CODE_MAP = {
     VerifyCode.TEST_PROPERTY_ERROR: "property-test",
     VerifyCode.INTEGRITY_ERROR: "integrity-error",
     VerifyCode.ORG_SCOPE_ERROR: "org-scope-error",
+    VerifyCode.SOLUTION_TIMING_ERROR: "solution-timing",
 }
 
 
@@ -49,6 +51,7 @@ class VerifyOutput:
     code: VerifyCode
     origin: Optional[str] = None
     timestamp: Optional[str] = None
+    edge_token: Optional[str] = None
 
     # Internal fields, for debugging and tracing
     _trace_id: Optional[str] = None
@@ -75,5 +78,6 @@ class VerifyOutput:
             code=VerifyCode(data.get("code", VerifyCode.ERROR_OTHER)),
             origin=data.get("origin"),
             timestamp=data.get("timestamp"),
+            timestamp=data.get("edge_token"),
             **kwargs,
         )
